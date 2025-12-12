@@ -11,6 +11,7 @@ import {
   Users,
   Shield,
   ArrowRight,
+  Image,
 } from "lucide-react";
 
 export default function Index() {
@@ -20,10 +21,11 @@ export default function Index() {
       <nav className="border-b border-shelta-slate-light sticky top-0 z-50 bg-white">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 flex justify-between items-center">
           <div className="flex items-center gap-2">
-            <div className="w-10 h-10 rounded-full bg-shelta-emerald flex items-center justify-center text-white font-bold text-lg">
-              🏠
-            </div>
-            <span className="text-xl font-bold text-shelta-slate">SHELTA</span>
+            <img
+              src="/sheltatrans.png"
+              alt="Shelta Logo"
+              className="w-50 h-50 object-contain"
+            />
           </div>
           <div className="flex gap-4 items-center">
             <Link to="/login">
@@ -73,7 +75,11 @@ export default function Index() {
             </div>
             <div className="hidden md:block">
               <div className="relative h-96 bg-gradient-to-br from-shelta-emerald-light to-shelta-ocean-light rounded-lg flex items-center justify-center">
-                <Home className="w-40 h-40 text-shelta-emerald/30" />
+                <img
+                  className="object-cover rounded-lg"
+                  src="/2bdr.jpg"
+                  alt="2-bedroom apartment"
+                />
               </div>
             </div>
           </div>
@@ -331,15 +337,21 @@ export default function Index() {
         <div className="max-w-7xl mx-auto">
           <div className="grid sm:grid-cols-3 gap-8 text-center">
             <div>
-              <div className="text-4xl font-bold text-shelta-gold mb-2">10k+</div>
+              <div className="text-4xl font-bold text-shelta-gold mb-2">
+                10k+
+              </div>
               <p className="text-gray-200">Properties Listed</p>
             </div>
             <div>
-              <div className="text-4xl font-bold text-shelta-gold mb-2">25k+</div>
+              <div className="text-4xl font-bold text-shelta-gold mb-2">
+                25k+
+              </div>
               <p className="text-gray-200">Happy Users</p>
             </div>
             <div>
-              <div className="text-4xl font-bold text-shelta-gold mb-2">500+</div>
+              <div className="text-4xl font-bold text-shelta-gold mb-2">
+                500+
+              </div>
               <p className="text-gray-200">Verified Providers</p>
             </div>
           </div>
@@ -455,9 +467,7 @@ export default function Index() {
             </div>
           </div>
           <div className="border-t border-gray-700 pt-8 text-center text-sm">
-            <p>
-              &copy; 2024 SHELTA. Building secure housing in Accra, Ghana.
-            </p>
+            <p>&copy; 2024 SHELTA. Building secure housing in Accra, Ghana.</p>
           </div>
         </div>
       </footer>
