@@ -149,7 +149,7 @@ export default function Signup() {
       });
 
       // Navigate to appropriate dashboard
-      navigate(`/${finalRole}-dashboard`);
+      navigate(`/dashboard/${finalRole}`);
     } catch (error) {
       console.error("Signup error:", error);
 
