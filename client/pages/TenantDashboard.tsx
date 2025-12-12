@@ -14,6 +14,7 @@ import {
   MessageSquare,
   Search,
   Wrench,
+  DollarSign,
 } from "lucide-react";
 
 export default function TenantDashboard() {
@@ -27,6 +28,11 @@ export default function TenantDashboard() {
       label: "Book Services",
       path: "/dashboard/tenant/services",
       icon: <Wrench className="w-5 h-5" />,
+    },
+    {
+      label: "Rent Advance",
+      path: "/dashboard/tenant/rent-advance",
+      icon: <DollarSign className="w-5 h-5" />,
     },
     {
       label: "My Bookmarks",
