@@ -180,16 +180,9 @@ export default function Signup() {
         password_hash: "handled_by_auth",
       };
 
-      // Role-specific metadata
+      // Role-specific: add property_count for landlords
       if (finalRole === "landlord" && formData.propertyCount) {
         userPayload.property_count = parseInt(formData.propertyCount);
-      }
-
-      if (finalRole === "provider" && formData.services) {
-        userPayload.services = formData.services;
-        userPayload.years_experience = parseInt(
-          formData.yearsExperience || "0",
-        );
       }
 
       const { error: dbError } = await supabase
@@ -199,6 +192,29 @@ export default function Signup() {
       if (dbError) {
         console.error("DB Error:", dbError);
         throw dbError;
+      }
+
+      // 3. For service providers, create service_providers record
+      if (finalRole === "provider") {
+        const skills = formData.services
+          ? formData.services.split(",").map((s) => s.trim())
+          : [];
+
+        const { error: providerError } = await supabase
+          .from("service_providers")
+          .insert([
+            {
+              user_id: authData.user.id,
+              skills: skills,
+              certifications: [],
+              is_available: true,
+            },
+          ]);
+
+        if (providerError) {
+          console.error("Service Provider Error:", providerError);
+          throw providerError;
+        }
       }
 
       toast({
