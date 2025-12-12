@@ -74,10 +74,11 @@ export default function Login() {
       <div className="w-full max-w-md">
         <div className="bg-white rounded-lg shadow-lg p-8">
           <div className="flex items-center gap-2 mb-8 justify-center">
-            <div className="w-12 h-12 rounded-full bg-shelta-emerald flex items-center justify-center text-white font-bold text-xl">
-              🏠
-            </div>
-            <span className="text-2xl font-bold text-shelta-slate">SHELTA</span>
+            <img
+              src="/sheltatrans.png"
+              alt="Shelta Logo"
+              className="w-50 h-50 object-contain"
+            />
           </div>
 
           <h1 className="text-2xl font-bold text-shelta-slate mb-2 text-center">
