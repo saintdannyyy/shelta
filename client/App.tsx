@@ -10,6 +10,7 @@ import Login from "./pages/Login";
 import Signup from "./pages/Signup";
 import Dashboard from "./pages/Dashboard";
 import TenantDashboard from "./pages/TenantDashboard";
+import TenantPropertySearch from "./pages/TenantPropertySearch";
 import LandlordDashboard from "./pages/LandlordDashboard";
 import ProviderDashboard from "./pages/ProviderDashboard";
 import NotFound from "./pages/NotFound";
@@ -28,6 +29,10 @@ export const App = () => (
           <Route path="/signup" element={<Signup />} />
           <Route path="/dashboard" element={<Dashboard />} />
           <Route path="/dashboard/tenant" element={<TenantDashboard />} />
+          <Route
+            path="/dashboard/tenant/search"
+            element={<TenantPropertySearch />}
+          />
           <Route path="/dashboard/landlord" element={<LandlordDashboard />} />
           <Route path="/dashboard/provider" element={<ProviderDashboard />} />
           {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
