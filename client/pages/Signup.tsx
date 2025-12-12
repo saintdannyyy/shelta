@@ -16,15 +16,31 @@ import { useToast } from "@/components/ui/use-toast";
 
 type UserRole = "tenant" | "landlord" | "provider" | "agent";
 
+interface FormDataType {
+  firstName: string;
+  lastName: string;
+  email: string;
+  phone: string;
+  password: string;
+  confirmPassword: string;
+  // Tenant
+  spendingMin?: string;
+  spendingMax?: string;
+  // Landlord
+  propertyCount?: string;
+  // Provider
+  services?: string;
+  yearsExperience?: string;
+}
+
 export default function Signup() {
   const [step, setStep] = useState(1);
   const [selectedRole, setSelectedRole] = useState<UserRole | null>(null);
-  const [formData, setFormData] = useState({
+  const [formData, setFormData] = useState<FormDataType>({
     firstName: "",
     lastName: "",
     email: "",
     phone: "",
-    monthlyIncome: "",
     password: "",
     confirmPassword: "",
   });
@@ -41,7 +57,9 @@ export default function Signup() {
     setStep(2);
   };
 
-  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleInputChange = (
+    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
+  ) => {
     const { name, value } = e.target;
     setFormData((prev) => ({
       ...prev,
@@ -77,7 +95,7 @@ export default function Signup() {
       ) {
         toast({
           title: "Error",
-          description: "Please fill in all fields",
+          description: "Please fill in all required fields",
           variant: "destructive",
         });
         setLoading(false);
@@ -104,6 +122,30 @@ export default function Signup() {
         return;
       }
 
+      // Validate tenant spending range
+      if (finalRole === "tenant") {
+        if (!formData.spendingMin || !formData.spendingMax) {
+          toast({
+            title: "Error",
+            description: "Please enter your spending range",
+            variant: "destructive",
+          });
+          setLoading(false);
+          return;
+        }
+        const min = parseInt(formData.spendingMin);
+        const max = parseInt(formData.spendingMax);
+        if (min > max) {
+          toast({
+            title: "Error",
+            description: "Minimum amount cannot be greater than maximum",
+            variant: "destructive",
+          });
+          setLoading(false);
+          return;
+        }
+      }
+
       // 1. Create auth user with Supabase Auth
       const { data: authData, error: authError } = await supabase.auth.signUp({
         email: formData.email,
@@ -120,23 +162,39 @@ export default function Signup() {
 
       // 2. Insert user data into users table
       const incomeMin =
-        finalRole === "tenant" ? parseInt(formData.monthlyIncome) || 0 : null;
+        finalRole === "tenant" ? parseInt(formData.spendingMin || "0") : null;
+      const incomeMax =
+        finalRole === "tenant" ? parseInt(formData.spendingMax || "0") : null;
 
-      const { error: dbError } = await supabase.from("users").insert([
-        {
-          id: authData.user.id,
-          email: formData.email,
-          phone: formData.phone,
-          first_name: formData.firstName,
-          last_name: formData.lastName,
-          role: finalRole, // ✅ Explicitly set role here
-          income_range_min: incomeMin,
-          income_range_max: incomeMin,
-          is_verified: false,
-          is_active: true,
-          password_hash: "handled_by_auth",
-        },
-      ]);
+      const userPayload: any = {
+        id: authData.user.id,
+        email: formData.email,
+        phone: formData.phone,
+        first_name: formData.firstName,
+        last_name: formData.lastName,
+        role: finalRole,
+        income_range_min: incomeMin,
+        income_range_max: incomeMax,
+        is_verified: false,
+        is_active: true,
+        password_hash: "handled_by_auth",
+      };
+
+      // Role-specific metadata
+      if (finalRole === "landlord" && formData.propertyCount) {
+        userPayload.property_count = parseInt(formData.propertyCount);
+      }
+
+      if (finalRole === "provider" && formData.services) {
+        userPayload.services = formData.services;
+        userPayload.years_experience = parseInt(
+          formData.yearsExperience || "0",
+        );
+      }
+
+      const { error: dbError } = await supabase
+        .from("users")
+        .insert([userPayload]);
 
       if (dbError) {
         console.error("DB Error:", dbError);
@@ -153,7 +211,6 @@ export default function Signup() {
     } catch (error) {
       console.error("Signup error:", error);
 
-      // Delete auth user if DB insert fails
       if (error instanceof Error && error.message.includes("violates")) {
         const { data } = await supabase.auth.getUser();
         if (data.user) {
@@ -172,7 +229,10 @@ export default function Signup() {
     }
   };
 
-  const roleConfig = {
+  const roleConfig: Record<
+    UserRole,
+    { title: string; description: string; icon: any }
+  > = {
     tenant: {
       title: "Find Your Perfect Home",
       description: "Access affordable housing with verified landlords",
@@ -187,6 +247,11 @@ export default function Signup() {
       title: "Grow Your Business",
       description: "Get maintenance jobs and build your portfolio",
       icon: Wrench,
+    },
+    agent: {
+      title: "List Properties",
+      description: "Help tenants find homes and earn commissions",
+      icon: Home,
     },
   };
 
@@ -206,6 +271,7 @@ export default function Signup() {
 
           <div className="grid md:grid-cols-3 gap-6">
             {Object.entries(roleConfig).map(([key, config]) => {
+              if (key === "agent") return null; // Hide agent for now
               const Icon = config.icon;
               return (
                 <button
@@ -248,8 +314,110 @@ export default function Signup() {
 
   // Step 2: Account Details
   const finalRole = prefilledRole || selectedRole;
-  const config = roleConfig[(finalRole || "tenant") as keyof typeof roleConfig];
+  const config = roleConfig[(finalRole || "tenant") as UserRole];
   const Icon = config.icon;
+
+  const renderRoleSpecificFields = () => {
+    switch (finalRole) {
+      case "tenant":
+        return (
+          <div className="space-y-3">
+            <div>
+              <Label htmlFor="spendingMin" className="text-xs">
+                Minimum Monthly Budget (GHS)
+              </Label>
+              <Input
+                id="spendingMin"
+                type="number"
+                name="spendingMin"
+                placeholder="500"
+                value={formData.spendingMin || ""}
+                onChange={handleInputChange}
+                className="h-9"
+              />
+            </div>
+            <div>
+              <Label htmlFor="spendingMax" className="text-xs">
+                Maximum Monthly Budget (GHS)
+              </Label>
+              <Input
+                id="spendingMax"
+                type="number"
+                name="spendingMax"
+                placeholder="2000"
+                value={formData.spendingMax || ""}
+                onChange={handleInputChange}
+                className="h-9"
+              />
+            </div>
+            <p className="text-xs text-gray-500">
+              We'll show you properties within your budget range
+            </p>
+          </div>
+        );
+
+      case "landlord":
+        return (
+          <div>
+            <Label htmlFor="propertyCount" className="text-xs">
+              Number of Properties
+            </Label>
+            <Input
+              id="propertyCount"
+              type="number"
+              name="propertyCount"
+              placeholder="1"
+              value={formData.propertyCount || ""}
+              onChange={handleInputChange}
+              className="h-9"
+            />
+            <p className="text-xs text-gray-500 mt-1">
+              How many properties do you manage?
+            </p>
+          </div>
+        );
+
+      case "provider":
+        return (
+          <>
+            <div>
+              <Label htmlFor="services" className="text-xs">
+                Services Offered
+              </Label>
+              <Input
+                id="services"
+                type="text"
+                name="services"
+                placeholder="Plumbing, Electrical, Cleaning..."
+                value={formData.services || ""}
+                onChange={handleInputChange}
+                className="h-9"
+              />
+              <p className="text-xs text-gray-500 mt-1">
+                Comma-separated list of services
+              </p>
+            </div>
+            <div>
+              <Label htmlFor="yearsExperience" className="text-xs">
+                Years of Experience
+              </Label>
+              <Input
+                id="yearsExperience"
+                type="number"
+                name="yearsExperience"
+                placeholder="5"
+                value={formData.yearsExperience || ""}
+                onChange={handleInputChange}
+                className="h-9"
+              />
+            </div>
+          </>
+        );
+
+      default:
+        return null;
+    }
+  };
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-emerald-50 to-blue-50 flex items-center justify-center px-4 py-8">
@@ -340,25 +508,8 @@ export default function Signup() {
               />
             </div>
 
-            {finalRole === "tenant" && (
-              <div>
-                <Label htmlFor="monthlyIncome" className="text-xs">
-                  Monthly Income (GHS)
-                </Label>
-                <Input
-                  id="monthlyIncome"
-                  type="number"
-                  name="monthlyIncome"
-                  placeholder="3000"
-                  value={formData.monthlyIncome}
-                  onChange={handleInputChange}
-                  className="h-9"
-                />
-                <p className="text-xs text-gray-500 mt-1">
-                  Helps us show you affordable properties
-                </p>
-              </div>
-            )}
+            {/* Role-specific fields */}
+            {renderRoleSpecificFields()}
 
             <div>
               <Label htmlFor="password" className="text-xs">
