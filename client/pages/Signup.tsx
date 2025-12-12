@@ -235,21 +235,22 @@ export default function Signup() {
   > = {
     tenant: {
       title: "Find Your Perfect Home",
-      description: "Access affordable housing with verified landlords",
+      description:
+        "Search and rent affordable properties from verified landlords",
       icon: Key,
     },
     landlord: {
-      title: "Manage Your Properties",
-      description: "List properties and automate rent collection",
+      title: "Become a House Owner",
+      description: "List your properties and manage tenants effortlessly",
       icon: Home,
     },
     provider: {
-      title: "Grow Your Business",
-      description: "Get maintenance jobs and build your portfolio",
+      title: "Become a Service Provider",
+      description: "Offer maintenance and repair services to earn income",
       icon: Wrench,
     },
     agent: {
-      title: "List Properties",
+      title: "Real Estate Agent",
       description: "Help tenants find homes and earn commissions",
       icon: Home,
     },
