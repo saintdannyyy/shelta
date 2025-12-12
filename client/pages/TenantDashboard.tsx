@@ -84,12 +84,14 @@ export default function TenantDashboard() {
 
   // Calculate affordability
   const maxAffordable = Math.round(income * 0.3);
-  const affordabilityScore = ((maxAffordable - priceRange[0]) / maxAffordable) * 100;
+  const affordabilityScore =
+    ((maxAffordable - priceRange[0]) / maxAffordable) * 100;
 
   // Filter properties
   const filteredProperties = properties.filter((prop) => {
-    const matchesSearch =
-      prop.address.toLowerCase().includes(searchQuery.toLowerCase());
+    const matchesSearch = prop.address
+      .toLowerCase()
+      .includes(searchQuery.toLowerCase());
     const matchesPrice =
       prop.rent >= priceRange[0] && prop.rent <= priceRange[1];
     const matchesQol = prop.qolScore >= qolMinScore;
@@ -100,7 +102,7 @@ export default function TenantDashboard() {
 
   const toggleSaved = (id: string) => {
     setProperties((props) =>
-      props.map((p) => (p.id === id ? { ...p, isSaved: !p.isSaved } : p))
+      props.map((p) => (p.id === id ? { ...p, isSaved: !p.isSaved } : p)),
     );
   };
 
@@ -330,11 +332,7 @@ export default function TenantDashboard() {
                         <MessageSquare className="w-4 h-4" />
                         Chat
                       </Button>
-                      <Button
-                        size="sm"
-                        variant="outline"
-                        className="gap-1"
-                      >
+                      <Button size="sm" variant="outline" className="gap-1">
                         <MapIcon className="w-4 h-4" />
                         View Map
                       </Button>
