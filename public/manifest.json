@@ -1,0 +1,82 @@
+{
+  "name": "SHELTA - Secure Housing, Easy Living",
+  "short_name": "SHELTA",
+  "description": "A Progressive Web App for digitizing the housing lifecycle in Accra, Ghana. Find affordable housing, manage properties, and get maintenance services.",
+  "start_url": "/",
+  "scope": "/",
+  "display": "standalone",
+  "orientation": "portrait-primary",
+  "background_color": "#ffffff",
+  "theme_color": "#004D7A",
+  "categories": ["productivity", "real-estate"],
+  "prefer_related_applications": false,
+  "icons": [
+    {
+      "src": "data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 192 192'><rect fill='%23004D7A' width='192' height='192'/><text x='50%' y='50%' font-size='120' font-family='Arial' text-anchor='middle' dominant-baseline='middle' fill='white'>🏠</text></svg>",
+      "sizes": "192x192",
+      "type": "image/svg+xml",
+      "purpose": "any"
+    },
+    {
+      "src": "data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 512 512'><rect fill='%23004D7A' width='512' height='512'/><text x='50%' y='50%' font-size='400' font-family='Arial' text-anchor='middle' dominant-baseline='middle' fill='white'>🏠</text></svg>",
+      "sizes": "512x512",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ],
+  "screenshots": [
+    {
+      "src": "data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 540 720'><rect fill='%23f3f4f6' width='540' height='720'/><text x='50%' y='50%' font-size='60' font-family='Arial' text-anchor='middle' dominant-baseline='middle' fill='%2310b981' font-weight='bold'>SHELTA</text></svg>",
+      "sizes": "540x720",
+      "type": "image/svg+xml",
+      "form_factor": "narrow"
+    },
+    {
+      "src": "data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1280 720'><rect fill='%23f3f4f6' width='1280' height='720'/><text x='50%' y='50%' font-size='120' font-family='Arial' text-anchor='middle' dominant-baseline='middle' fill='%2310b981' font-weight='bold'>SHELTA</text></svg>",
+      "sizes": "1280x720",
+      "type": "image/svg+xml",
+      "form_factor": "wide"
+    }
+  ],
+  "shortcuts": [
+    {
+      "name": "Find Housing",
+      "short_name": "Find",
+      "description": "Search for affordable housing",
+      "url": "/dashboard?role=tenant",
+      "icons": [
+        {
+          "src": "data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 192 192'><rect fill='%23004D7A' width='192' height='192'/><text x='50%' y='50%' font-size='120' font-family='Arial' text-anchor='middle' dominant-baseline='middle' fill='white'>🔑</text></svg>",
+          "sizes": "192x192",
+          "type": "image/svg+xml"
+        }
+      ]
+    },
+    {
+      "name": "Manage Properties",
+      "short_name": "Properties",
+      "description": "Manage your rental properties",
+      "url": "/dashboard?role=landlord",
+      "icons": [
+        {
+          "src": "data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 192 192'><rect fill='%23004D7A' width='192' height='192'/><text x='50%' y='50%' font-size='120' font-family='Arial' text-anchor='middle' dominant-baseline='middle' fill='white'>🏠</text></svg>",
+          "sizes": "192x192",
+          "type": "image/svg+xml"
+        }
+      ]
+    },
+    {
+      "name": "View Jobs",
+      "short_name": "Jobs",
+      "description": "Check maintenance jobs",
+      "url": "/dashboard?role=provider",
+      "icons": [
+        {
+          "src": "data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 192 192'><rect fill='%23f59e0b' width='192' height='192'/><text x='50%' y='50%' font-size='120' font-family='Arial' text-anchor='middle' dominant-baseline='middle' fill='white'>🔧</text></svg>",
+          "sizes": "192x192",
+          "type": "image/svg+xml"
+        }
+      ]
+    }
+  ]
+}
