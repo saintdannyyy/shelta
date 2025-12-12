@@ -11,8 +11,13 @@ import Signup from "./pages/Signup";
 import Dashboard from "./pages/Dashboard";
 import TenantDashboard from "./pages/TenantDashboard";
 import TenantPropertySearch from "./pages/TenantPropertySearch";
+import TenantServices from "./pages/TenantServices";
+import PropertyDetail from "./pages/PropertyDetail";
 import LandlordDashboard from "./pages/LandlordDashboard";
+import RentLedger from "./pages/RentLedger";
+import MaintenanceTickets from "./pages/MaintenanceTickets";
 import ProviderDashboard from "./pages/ProviderDashboard";
+import JobBoard from "./pages/JobBoard";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -33,8 +38,22 @@ export const App = () => (
             path="/dashboard/tenant/search"
             element={<TenantPropertySearch />}
           />
+          <Route
+            path="/dashboard/tenant/services"
+            element={<TenantServices />}
+          />
+          <Route path="/property/:id" element={<PropertyDetail />} />
           <Route path="/dashboard/landlord" element={<LandlordDashboard />} />
+          <Route
+            path="/dashboard/landlord/rent-ledger"
+            element={<RentLedger />}
+          />
+          <Route
+            path="/dashboard/landlord/maintenance"
+            element={<MaintenanceTickets />}
+          />
           <Route path="/dashboard/provider" element={<ProviderDashboard />} />
+          <Route path="/dashboard/provider/jobs" element={<JobBoard />} />
           {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
           <Route path="*" element={<NotFound />} />
         </Routes>
