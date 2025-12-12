@@ -2,16 +2,71 @@ import { Link, useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { useState } from "react";
+import { supabase } from "@/lib/supabase";
+import { useToast } from "@/components/ui/use-toast";
+
+type UserRole = "tenant" | "landlord" | "provider" | "agent";
 
 export default function Login() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
+  const { toast } = useToast();
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    // TODO: Implement authentication with Supabase
-    navigate("/dashboard");
+    setLoading(true);
+
+    try {
+      // Sign in with Supabase
+      const { data: authData, error: authError } =
+        await supabase.auth.signInWithPassword({
+          email,
+          password,
+        });
+
+      if (authError) {
+        throw authError;
+      }
+
+      if (!authData.user) {
+        throw new Error("Failed to sign in");
+      }
+
+      // Fetch user role from users table
+      const { data: userData, error: userError } = await supabase
+        .from("users")
+        .select("role")
+        .eq("id", authData.user.id)
+        .single();
+
+      if (userError) {
+        throw userError;
+      }
+
+      if (!userData || !userData.role) {
+        throw new Error("User role not found");
+      }
+
+      toast({
+        title: "Success ✅",
+        description: "Logged in successfully!",
+      });
+
+      // Navigate to role-specific dashboard
+      navigate(`/dashboard/${userData.role as UserRole}`);
+    } catch (error) {
+      console.error("Login error:", error);
+      toast({
+        title: "Error",
+        description:
+          error instanceof Error ? error.message : "Failed to sign in",
+        variant: "destructive",
+      });
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -44,6 +99,7 @@ export default function Login() {
                 onChange={(e) => setEmail(e.target.value)}
                 className="w-full"
                 required
+                disabled={loading}
               />
             </div>
 
@@ -58,12 +114,17 @@ export default function Login() {
                 onChange={(e) => setPassword(e.target.value)}
                 className="w-full"
                 required
+                disabled={loading}
               />
             </div>
 
             <div className="flex items-center justify-between text-sm">
               <label className="flex items-center gap-2 cursor-pointer">
-                <input type="checkbox" className="w-4 h-4 rounded" />
+                <input
+                  type="checkbox"
+                  className="w-4 h-4 rounded"
+                  disabled={loading}
+                />
                 <span className="text-gray-600">Remember me</span>
               </label>
               <Link to="#" className="text-shelta-emerald hover:underline">
@@ -74,15 +135,19 @@ export default function Login() {
             <Button
               type="submit"
               className="w-full bg-shelta-emerald hover:bg-shelta-emerald/90 h-10"
+              disabled={loading}
             >
-              Sign In
+              {loading ? "Signing in..." : "Sign In"}
             </Button>
           </form>
 
           <div className="mt-6 text-center">
             <p className="text-gray-600">
               Don't have an account?{" "}
-              <Link to="/signup" className="text-shelta-emerald font-medium hover:underline">
+              <Link
+                to="/signup"
+                className="text-shelta-emerald font-medium hover:underline"
+              >
                 Sign up
               </Link>
             </p>
